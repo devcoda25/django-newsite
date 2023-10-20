@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block content %}
+
+
+<div class="breadcrumb-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                {% if object_list %}
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    <li>{{ category.name }}</li>
+                </ol>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
+                <div class="block category-listing category-style2">
+                    <h3 class="news-title"><span>{{ category.name }}</span></h3>
+                    <div class="post-block-wrapper post-list-view clearfix">
+                        {% for post in object_list %}
+                        <div class="row">
+                            <div class="col-md-5 col-sm-6">
+                                <div class="post-thumbnail thumb-float-style">
+                                    <a href="">
+                                        <img class="img-fluid" src="{{ post.cover.url }}" alt="" />
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-7 col-sm-6">
+                                <div class="post-content">
+                                    <div class="post-meta">
+                                        <span>
+                                            <i class="fa fa-clock-o"></i>
+                                            <a href="single-post.html#comments">{{ post.pub_date }}</a>
+                                        </span>
+                                        <span class="post-author">
+                                            <a href="#author.html" class="text-dark">Newsbit</a>
+                                        </span>
+                                    </div>
+                                    <h2 class="post-title title-large">
+                                        <a href="{% url 'post_view' post_id=post.id %}">{{ post.title|truncatewords:7 }}</a>
+                                    </h2>
+                                    <p>
+                                        {{ post.content|truncatewords:20 }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p>No posts found yet.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+                <nav aria-label="pagination-wrapper" class="pagination-wrapper">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+                            <a class="page-link" href="{% if page_obj.has_previous %}?page=1{% endif %}" aria-label="Previous">
+                                <span aria-hidden="true"><i class="fa fa-angle-double-left mr-2"></i></span>
+                                <span class="">Previous</span>
+                            </a>
+                        </li>
+                        {% for page in page_obj.paginator.page_range %}
+                            <li class="page-item {% if page == page_obj.number %}active{% endif %}">
+                                <a class="page-link" href="?page={{ page }}">{{ page }}</a>
+                            </li>
+                        {% endfor %}
+                        <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+                            <a class="page-link" href="{% if page_obj.has_next %}?page={{ page_obj.paginator.num_pages }}{% endif %}" aria-label="Next">
+                                <span class="">Next</span>
+                                <span aria-hidden="true"><i class="fa fa-angle-double-right ml-2"></i></span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                {% include "hotnews.html" %}
+            </div>
+        </div>
+        <div class="share-block  d-flex justify-content-between align-items-center border-top border-bottom mt-5">
+            <div class="post-tags">
+                <span>Tags</span>
+                {% for category in categories %}
+                <a href="{{ category.get_absolute_url }} {% url 'category_posts' category.pk %}">{{ category.name }} </a>
+                {% endfor %}
+            </div>
+    
+            
+        </div>
+    </div>
+
+   
+</section>
+
+
+{% endblock %}
